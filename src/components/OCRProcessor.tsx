@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -29,12 +28,17 @@ const OCRProcessor: React.FC = () => {
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
       
+      toast({
+        title: "Processing Started",
+        description: "Analyzing your bill with enhanced OCR...",
+      });
+      
       // Process the file with OCR
       await processImage(file);
       
       toast({
         title: "Processing Complete",
-        description: "Your bill has been successfully analyzed.",
+        description: "Your bill has been successfully analyzed with improved accuracy.",
       });
     } catch (err) {
       console.error('Error processing file:', err);
@@ -50,16 +54,17 @@ const OCRProcessor: React.FC = () => {
     try {
       setImagePreview(imageData);
       
-      // Convert data URL to Blob for processing
-      const response = await fetch(imageData);
-      const blob = await response.blob();
+      toast({
+        title: "Processing Started",
+        description: "Analyzing your captured bill with enhanced OCR...",
+      });
       
       // Process the image with OCR
       await processImage(imageData);
       
       toast({
         title: "Processing Complete",
-        description: "Your bill has been successfully analyzed.",
+        description: "Your bill has been successfully analyzed with improved accuracy.",
       });
     } catch (err) {
       console.error('Error processing captured image:', err);
@@ -69,6 +74,11 @@ const OCRProcessor: React.FC = () => {
         description: "There was an error processing your bill.",
       });
     }
+  };
+
+  const resetProcessor = () => {
+    setActiveTab("upload");
+    setImagePreview(null);
   };
 
   return (
@@ -123,8 +133,7 @@ const OCRProcessor: React.FC = () => {
           <div className="flex justify-center mt-8">
             <button
               onClick={() => {
-                setActiveTab("upload");
-                setImagePreview(null);
+                resetProcessor();
               }}
               className="text-purple-600 hover:text-purple-800 underline"
             >
