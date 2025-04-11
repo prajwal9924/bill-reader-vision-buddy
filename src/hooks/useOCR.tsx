@@ -103,9 +103,10 @@ export function useOCR() {
       await worker.initialize('eng');
       
       // Configure Tesseract for receipt recognition
+      // Fix: Use a numeric value for tessedit_pageseg_mode instead of a string
       await worker.setParameters({
         tessedit_char_whitelist: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$,.:/\\-& ',
-        tessedit_pageseg_mode: '6', // Assume a single uniform block of text
+        tessedit_pageseg_mode: 6, // Use numeric value 6 instead of string "6"
         preserve_interword_spaces: '1',
         tessedit_ocr_engine_mode: '2', // Use LSTM only
       });
