@@ -21,17 +21,23 @@ export function useOCR() {
       setProgress(0);
       setError(null);
       
-      const worker = await Tesseract.createWorker('eng');
+      const worker = await Tesseract.createWorker({
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            setProgress(m.progress * 100);
+          }
+        }
+      });
+      
+      // Load English language data
+      await worker.loadLanguage('eng');
+      await worker.initialize('eng');
       
       await worker.setParameters({
         tessedit_char_whitelist: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$,.:/\\- ',
       });
       
-      const ret = await worker.recognize(imageFile, {
-        progress: (p) => {
-          setProgress(p.progress * 100);
-        },
-      });
+      const ret = await worker.recognize(imageFile);
       
       await worker.terminate();
       
